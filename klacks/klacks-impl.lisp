@@ -311,6 +311,7 @@
   (with-source (source current-key current-values current-attributes)
     (setf current-key :end-element)
     (setf current-attributes nil)
+    (pop (base-stack *ctx*))
     (validate-end-element *ctx* (third current-values))
     cont))
 
@@ -319,12 +320,15 @@
 		current-key current-values current-attributes namespace-stack
 		current-namespace-declarations)
     (let ((values* current-values)
-	  (new-b current-namespace-declarations))
+          (new-b current-namespace-declarations)
+          (ns-stack namespace-stack))
       (setf current-attributes nil)
       (push n-b namespace-stack)
       (let ((finish
 	     (lambda ()
+	       (pop (base-stack *ctx*))
 	       (setf current-namespace-declarations new-b)
+	       (setf namespace-stack ns-stack)
 	       (klacks/element-3 source input values* cont))))
 	(klacks/content source input finish)))))
 
