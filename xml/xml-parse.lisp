@@ -2576,7 +2576,7 @@
           (wf-error input "document includes an internal subset"))
         (ensure-dtd)
         (consume-token input)
-	(sax:start-internal-subset (handler *ctx*))
+        (sax:start-internal-subset (handler *ctx*))
         (while (progn (p/S? input)
                       (not (eq (peek-token input) :\] )))
           (if (eq (peek-token input) :PE-REFERENCE)
@@ -2593,7 +2593,7 @@
               (let ((*expand-pe-p* t))
                 (p/markup-decl input))))
         (consume-token input)
-	(sax:end-internal-subset (handler *ctx*))
+        (sax:end-internal-subset (handler *ctx*))
         (p/S? input))
       (expect input :>)
       (when extid
@@ -2613,12 +2613,14 @@
               (let ((xi2 (xstream-open-extid effective-extid)))
 		(with-zstream (zi2 :input-stack (list xi2))
 		  (ensure-dtd)
+                  (sax:start-internal-subset (handler *ctx*))
 		  (p/ext-subset zi2)
 		  (when (and fresh-dtd-p
 			     *cache-all-dtds*
 			     *validate*
 			     (not (standalone-p *ctx*)))
-		    (setf (getdtd sysid *dtd-cache*) (dtd *ctx*)))))))))
+		    (setf (getdtd sysid *dtd-cache*) (dtd *ctx*)))
+                  (sax:end-internal-subset (handler *ctx*))))))))
       (sax:end-dtd (handler *ctx*))
       (let ((dtd (dtd *ctx*)))
         (sax:entity-resolver
