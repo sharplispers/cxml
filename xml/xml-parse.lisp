@@ -3839,13 +3839,10 @@
 (defun build-attribute-list (attr-alist)
   ;; fixme: if there is a reason this function reverses attribute order,
   ;; it should be documented.
-  (let (attributes)
-    (dolist (pair attr-alist)
-      (push (sax:make-attribute :qname (car pair)
-				:value (cdr pair)
-				:specified-p t)
-	    attributes))
-    attributes))
+  (loop for (qname . value) in attr-alist
+        collect (sax:make-attribute :qname qname
+                                    :value value
+                                    :specified-p t)))
 
 (defun check-attribute-uniqueness (attributes)
   ;; 5.3 Uniqueness of Attributes
