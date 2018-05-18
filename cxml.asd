@@ -2,6 +2,9 @@
   (:use #:asdf #:cl))
 (cl:in-package #:cxml-system)
 
+#+scl
+(pushnew 'uri-is-namestring *features*)
+
 (defclass dummy-cxml-component () ())
 
 (defmethod component-name ((c dummy-cxml-component))
@@ -35,34 +38,12 @@
 
 (defclass closure-source-file (cl-source-file) ())
 
-#+scl
-(pushnew 'uri-is-namestring *features*)
-
 #+sbcl
 (defmethod perform :around ((o compile-op) (s closure-source-file))
   ;; shut up already.  Correctness first.
   (handler-bind ((sb-ext:compiler-note #'muffle-warning))
     (let (#+sbcl (*compile-print* nil))
       (call-next-method))))
-
-(defsystem :cxml-xml
-  :default-component-class closure-source-file
-  :pathname "xml/"
-  :depends-on (:closure-common :puri #-scl :trivial-gray-streams)
-  :components ((:file "package")
-               (:file "util"            :depends-on ("package"))
-               (:file "sax-handler")
-               (:file "xml-name-rune-p" :depends-on ("package" "util"))
-               (:file "split-sequence"  :depends-on ("package"))
-               (:file "xml-parse"       :depends-on ("package" "util" "sax-handler" "split-sequence" "xml-name-rune-p"))
-               (:file "unparse"         :depends-on ("xml-parse"))
-               (:file "xmls-compat"     :depends-on ("xml-parse"))
-               (:file "recoder"         :depends-on ("xml-parse"))
-               (:file "xmlns-normalizer" :depends-on ("xml-parse"))
-               (:file "space-normalizer" :depends-on ("xml-parse"))
-               (:file "catalog"         :depends-on ("xml-parse"))
-               (:file "sax-proxy"       :depends-on ("xml-parse"))
-               (:file "atdoc-configuration" :depends-on ("package"))))
 
 (defclass utf8dom-file (closure-source-file) ((of)))
 
@@ -83,9 +64,28 @@
 (defmethod perform ((operation compile-op) (c utf8dom-file))
   (let ((*features* (cons 'utf8dom-file *features*))
         (*readtable*
-         (symbol-value (find-symbol "*UTF8-RUNES-READTABLE*"
-                                    :closure-common-system))))
+          (symbol-value (find-symbol "*UTF8-RUNES-READTABLE*"
+                                     :closure-common-system))))
     (call-next-method)))
+
+(defsystem :cxml-xml
+  :default-component-class closure-source-file
+  :pathname "xml/"
+  :depends-on (:closure-common :puri #-scl :trivial-gray-streams)
+  :components ((:file "package")
+               (:file "util"            :depends-on ("package"))
+               (:file "sax-handler")
+               (:file "xml-name-rune-p" :depends-on ("package" "util"))
+               (:file "split-sequence"  :depends-on ("package"))
+               (:file "xml-parse"       :depends-on ("package" "util" "sax-handler" "split-sequence" "xml-name-rune-p"))
+               (:file "unparse"         :depends-on ("xml-parse"))
+               (:file "xmls-compat"     :depends-on ("xml-parse"))
+               (:file "recoder"         :depends-on ("xml-parse"))
+               (:file "xmlns-normalizer" :depends-on ("xml-parse"))
+               (:file "space-normalizer" :depends-on ("xml-parse"))
+               (:file "catalog"         :depends-on ("xml-parse"))
+               (:file "sax-proxy"       :depends-on ("xml-parse"))
+               (:file "atdoc-configuration" :depends-on ("package"))))
 
 (defsystem :cxml-dom
   :default-component-class closure-source-file
