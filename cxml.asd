@@ -68,10 +68,10 @@
                                      :closure-common-system))))
     (call-next-method)))
 
-(defsystem :cxml-xml
+(defsystem "cxml/xml"
   :default-component-class closure-source-file
   :pathname "xml/"
-  :depends-on (:closure-common :puri #-scl :trivial-gray-streams)
+  :depends-on ("closure-common" "puri" #-scl "trivial-gray-streams")
   :components ((:file "package")
                (:file "util"            :depends-on ("package"))
                (:file "sax-handler")
@@ -87,10 +87,10 @@
                (:file "sax-proxy"       :depends-on ("xml-parse"))
                (:file "atdoc-configuration" :depends-on ("package"))))
 
-(defsystem :cxml-dom
+(defsystem "cxml/dom"
   :default-component-class closure-source-file
   :pathname "dom/"
-  :depends-on (:cxml-xml)
+  :depends-on ("cxml/xml")
   :components    ((:file "package")
                   (:file rune-impl :pathname "dom-impl" :depends-on ("package"))
                   (:file rune-builder :pathname "dom-builder" :depends-on (rune-impl))
@@ -100,23 +100,23 @@
                   (utf8dom-file utf8-builder :pathname "dom-builder" :depends-on (utf8-impl))
                   (:file "dom-sax"         :depends-on ("package"))))
 
-(defsystem :cxml-klacks
+(defsystem "cxml/klacks"
   :default-component-class closure-source-file
   :pathname "klacks/"
-  :depends-on (:cxml-xml)
+  :depends-on ("cxml/xml")
   :serial t
   :components ((:file "package")
                (:file "klacks")
                (:file "klacks-impl")
                (:file "tap-source")))
 
-(defsystem :cxml-test
+(defsystem "cxml/test"
   :default-component-class closure-source-file
   :pathname "test/"
-  :depends-on (:cxml-xml :cxml-klacks :cxml-dom)
+  :depends-on ("cxml/xml" "cxml/klacks" "cxml/dom")
   :components ((:file "domtest")
                (:file "xmlconf")))
 
-(defsystem :cxml
+(defsystem "cxml"
   :components ()
-  :depends-on (:cxml-dom :cxml-klacks #-allegro :cxml-test))
+  :depends-on ("cxml/dom" "cxml/klacks" #-allegro "cxml/test"))
