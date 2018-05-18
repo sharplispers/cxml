@@ -16,7 +16,7 @@
 ;;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;;; Boston, MA  02111-1307  USA.
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 (defclass cxml-source (klacks:source)
     (;; args to make-source
@@ -517,16 +517,16 @@
 ;;;; debugging
 
 #+(or)
-(trace CXML::KLACKS/DOCTYPE 
-       CXML::KLACKS/EXT-PARSED-ENT 
-       CXML::KLACKS/MISC*-2 
-       CXML::KLACKS/ENTITY-REFERENCE 
-       CXML::KLACKS/ENTITY-REFERENCE-2 
-       CXML::KLACKS/ELEMENT 
-       CXML::KLACKS/ZTAG 
-       CXML::KLACKS/XMLDECL 
-       CXML::KLACKS/FINISH-DOCTYPE 
-       CXML::KLACKS/ELEMENT-3 
-       CXML::KLACKS/EOF 
-       CXML::KLACKS/ELEMENT-2 
+(trace CXML::KLACKS/DOCTYPE
+       CXML::KLACKS/EXT-PARSED-ENT
+       CXML::KLACKS/MISC*-2
+       CXML::KLACKS/ENTITY-REFERENCE
+       CXML::KLACKS/ENTITY-REFERENCE-2
+       CXML::KLACKS/ELEMENT
+       CXML::KLACKS/ZTAG
+       CXML::KLACKS/XMLDECL
+       CXML::KLACKS/FINISH-DOCTYPE
+       CXML::KLACKS/ELEMENT-3
+       CXML::KLACKS/EOF
+       CXML::KLACKS/ELEMENT-2
        CXML::KLACKS/CONTENT )

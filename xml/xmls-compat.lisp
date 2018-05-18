@@ -6,12 +6,12 @@
 ;;;; Developed 2004 for headcraft - http://headcraft.de/
 ;;;; Copyright: David Lichteblau
 
-(defpackage cxml-xmls
-  (:use :cl :runes)
+(cl:defpackage #:cxml-xmls
+  (:use #:cl #:runes)
   (:export #:make-node #:node-name #:node-ns #:node-attrs #:node-children
            #:make-xmls-builder #:map-node #:make-xpath-navigator))
 
-(in-package :cxml-xmls)
+(cl:in-package #:cxml-xmls)
 
 
 ;;;; Knoten

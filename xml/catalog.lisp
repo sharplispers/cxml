@@ -6,7 +6,7 @@
 ;;;; Developed 2004 for headcraft - http://headcraft.de/
 ;;;; Copyright: David Lichteblau
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 ;;; http://www.oasis-open.org/committees/entity/spec.html
 ;;;

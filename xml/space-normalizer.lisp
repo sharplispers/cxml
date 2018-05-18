@@ -5,7 +5,7 @@
 ;;;;
 ;;;; Copyright (c) 2005 David Lichteblau
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 (defclass whitespace-normalizer (sax-proxy)
     ((attributes :initform '(t) :accessor xml-space-attributes)

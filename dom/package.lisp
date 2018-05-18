@@ -3,9 +3,7 @@
 ;;;; This file is part of the CXML parser, released under Lisp-LGPL.
 ;;;; See file COPYING for details.
 
-(in-package :cl-user)
-
-(defpackage :dom
+(cl:defpackage #:dom
   (:use)
   (:export
    ;; DOM 2 functions
@@ -51,7 +49,7 @@
    #:node-name
    #:node-value
    #:node-type
-   #:parent-node 
+   #:parent-node
    #:child-nodes
    #:first-child
    #:last-child

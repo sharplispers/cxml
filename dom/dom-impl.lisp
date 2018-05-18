@@ -8,22 +8,22 @@
 ;;;; Author: knowledgeTools Int. GmbH
 
 #-cxml-system::utf8dom-file
-(defpackage :rune-dom
-  (:use :cl :runes)
-  #+rune-is-character (:nicknames :cxml-dom)
+(cl:defpackage #:rune-dom
+  (:use #:cl #:runes)
+  #+rune-is-character (:nicknames #:cxml-dom)
   (:export #:implementation #:make-dom-builder #:create-document))
 
 #+cxml-system::utf8dom-file
-(defpackage :utf8-dom
-  (:use :cl :utf8-runes)
-  (:nicknames :cxml-dom)
+(cl:defpackage #:utf8-dom
+  (:use #:cl #:utf8-runes)
+  (:nicknames #:cxml-dom)
   (:export #:implementation #:make-dom-builder #:create-document))
 
 #-cxml-system::utf8dom-file
-(in-package :rune-dom)
+(cl:in-package #:rune-dom)
 
 #+cxml-system::utf8dom-file
-(in-package :utf8-dom)
+(cl:in-package #:utf8-dom)
 
 
 ;; Classes
@@ -599,7 +599,7 @@
     (let ((i (position old-child children)))
       (unless i
         (dom-error :NOT_FOUND_ERR "~S is no child of ~S." old-child node))
-      (setf (elt children i) new-child)) 
+      (setf (elt children i) new-child))
     (setf (slot-value new-child 'parent) node)
     (setf (slot-value old-child 'parent) nil)
     old-child))
@@ -640,11 +640,11 @@
 ;; was auf node noch implemetiert werden muss:
 ;; - node-type
 ;; - can-adopt-p
-;; - ggf attributes 
+;; - ggf attributes
 ;; - node-name
 ;; - node-value
 
-;; node-name 
+;; node-name
 
 (defmethod dom:node-name ((self document))
   #"#document")
@@ -894,10 +894,10 @@
     (setf count (min count (- (length value) offset)))
     (let ((new (make-array (- (length value) count)
                            :element-type (array-element-type value))))
-      (replace new value 
+      (replace new value
                :start1 0 :end1 offset
                :start2 0 :end2 offset)
-      (replace new value 
+      (replace new value
                :start1 offset :end1 (length new)
                :start2 (+ offset count) :end2 (length value))
       (setf value new)))
@@ -1194,7 +1194,7 @@
 		       )
                      (t
                        (setf previous child)
-                       (incf i)))))) 
+                       (incf i))))))
              (map nil #'walk (dom:child-nodes n))))
     (walk node))
   (values))
@@ -1429,7 +1429,7 @@
 (defmethod dom:clone-node ((node document) deep)
   (let* ((document (make-instance 'document))
 	 (original-doctype (dom:doctype node))
-	 (doctype 
+	 (doctype
 	  (when original-doctype
 	    (make-instance 'document-type
 	      :owner document

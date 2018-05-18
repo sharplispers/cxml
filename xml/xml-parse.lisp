@@ -165,7 +165,7 @@
 ;;;; [**] Although I haven't investigated this properly yet, I believe that
 ;;;; we check this VC together with the WFC even in non-validating mode.
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 #+allegro
 (setf (excl:named-readtable :runes) *readtable*)

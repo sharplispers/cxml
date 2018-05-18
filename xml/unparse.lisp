@@ -23,26 +23,26 @@
 ;;; Library General Public License for more details.
 ;;;
 ;;; You should have received a copy of the GNU Library General Public
-;;; License along with this library; if not, write to the 
-;;; Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+;;; License along with this library; if not, write to the
+;;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;;; Boston, MA  02111-1307  USA.
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
-;; 
+;;
 ;; | Canonical XML
 ;; | =============
-;; |                                      
+;; |
 ;; | This document defines a subset of XML called canonical XML. The
 ;; | intended use of canonical XML is in testing XML processors, as a
 ;; | representation of the result of parsing an XML document.
-;; | 
+;; |
 ;; | Every well-formed XML document has a unique structurally equivalent
 ;; | canonical XML document. Two structurally equivalent XML documents have
 ;; | a byte-for-byte identical canonical XML document. Canonicalizing an
 ;; | XML document requires only information that an XML processor is
 ;; | required to make available to an application.
-;; | 
+;; |
 ;; | A canonical XML document conforms to the following grammar:
 ;; |
 ;; |    CanonXML    ::= Pi* element Pi*
@@ -59,9 +59,9 @@
 ;; |    S           ::= (see XML spec)
 ;; |
 ;; | Attributes are in lexicographical order (in Unicode bit order).
-;; |  
+;; |
 ;; | A canonical XML document is encoded in UTF-8.
-;; |  
+;; |
 ;; | Ignorable white space is considered significant and is treated
 ;; | equivalently to data.
 ;;
@@ -313,7 +313,7 @@
 	       prev
 	       (not (rod< prev name)))
       (error "misordered notations; cannot unparse canonically"))
-    (setf (previous-notation sink) name)) 
+    (setf (previous-notation sink) name))
   (sink-write-rod #"<!NOTATION " sink)
   (sink-write-rod name sink)
   (cond
@@ -323,7 +323,7 @@
     ((zerop (length system-id))
       (sink-write-rod #" PUBLIC " sink)
       (write-quoted-rod public-id sink))
-    (t 
+    (t
       (sink-write-rod #" PUBLIC " sink)
       (write-quoted-rod public-id sink)
       (sink-write-rod #" " sink)
@@ -343,7 +343,7 @@
       ((zerop (length system-id))
 	(sink-write-rod #" PUBLIC " sink)
 	(write-quoted-rod public-id sink))
-      (t 
+      (t
 	(sink-write-rod #" PUBLIC " sink)
 	(write-quoted-rod public-id sink)
 	(sink-write-rod #" " sink)
@@ -368,7 +368,7 @@
     ((zerop (length system-id))
       (sink-write-rod #" PUBLIC " sink)
       (write-quoted-rod public-id sink))
-    (t 
+    (t
       (sink-write-rod #" PUBLIC " sink)
       (write-quoted-rod public-id sink)
       (sink-write-rod #" " sink)
@@ -725,7 +725,7 @@
   "@arg[sink]{A @class{SAX handler}, evaluated}
    @arg[body]{forms}
    @return{The result of calling @code{sax:end-document} on @code{sink}.}
-   
+
    Evaluates sink and establishes it as the current output sink for
    the following \"convenience serialization\" macros and functions:
    @fun{with-element}, @fun{with-namespace}, @fun{doctype},
@@ -760,7 +760,7 @@
 
    Allows safe use of manual calls to SAX functions during the extent
    of @fun{with-xml-output},
-   
+
    Determines the current output sink established by @fun{with-xml-output},
    as used by convenience serialization functions.  Writes delayed
    serialization events to the sink. Binds local variable @code{var} to the
@@ -793,7 +793,7 @@
    Writes an element to the current output sink.
 
    This macro is a convenience wrapper around @fun{with-element*}.
-   
+
    @var{qname} is parsed to determine the element's namespace prefix
    and local name.  Then @fun{with-element*} is called on @var{body} using
    the resulting values."
@@ -926,7 +926,7 @@
    This function may only be called during the extent of a use of
    @fun{with-element} or @fun{with-element*}, and only before the first
    child node has been written.
-   
+
    An attribute for the current element is recorded using the namespace prefix
    and local name specified by @var{qname}.  The attribute's namespace prefix
     is resolved to a namespace URI using the bindings established by
@@ -948,7 +948,7 @@
    This function may only be called during the extent of a use of
    @fun{with-element} or @fun{with-element*}, and only before the first
    child node has been written.
-   
+
    An attribute for the current element is recorded using the namespace prefix
    and local name specified by arguments.  @var{prefix} is resolved to a
    namespace URI using the bindings established by @fun{with-namespace},

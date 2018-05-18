@@ -6,7 +6,7 @@
 ;;;; Copyright (c) 2004 David Lichteblau
 ;;;; Author: David Lichteblau
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 (defclass broadcast-handler (sax:abstract-handler)
   ((handlers :initform nil

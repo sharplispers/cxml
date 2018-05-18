@@ -12,15 +12,15 @@
 
 ;;; Redistribution and use  in source and binary   forms, with or  without
 ;;; modification, are permitted provided that the following conditions are
-;;; met:                                                                  
-;;; 								      
+;;; met:
+;;;
 ;;; 1. Redistributions  of  source  code  must retain  the above copyright
-;;;    notice, this list of conditions and the following disclaimer.      
-;;; 								      
+;;;    notice, this list of conditions and the following disclaimer.
+;;;
 ;;; 2. Redistributions in  binary form must reproduce  the above copyright
 ;;;    notice, this list of conditions and the following disclaimer in the
 ;;;    documentation and/or other materials provided with the distribution
-;;; 								      
+;;;
 ;;; THIS  SOFTWARE   IS PROVIDED ``AS  IS''   AND ANY  EXPRESS  OR IMPLIED
 ;;; WARRANTIES, INCLUDING, BUT NOT LIMITED  TO, THE IMPLIED WARRANTIES  OF
 ;;; MERCHANTABILITY  AND FITNESS FOR A  PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -41,8 +41,8 @@
 ;;   * The whole ErrorHandler class, this is better handled using
 ;;     conditions (but isn't yet)
 
-(defpackage :sax
-  (:use :common-lisp)
+(cl:defpackage #:sax
+  (:use #:common-lisp)
   (:export #:*namespace-processing*
 	   #:*include-xmlns-attributes*
 	   #:*use-xmlns-namespace*
@@ -59,7 +59,7 @@
            #:attribute-qname
            #:attribute-value
            #:attribute-specified-p
-	   
+
 	   #:start-document
 	   #:start-prefix-mapping
 	   #:start-element
@@ -93,10 +93,10 @@
 	   #:system-id
 	   #:xml-base))
 
-(in-package :sax)
+(cl:in-package #:sax)
 
 
-;;;; SAX-PARSER interface 
+;;;; SAX-PARSER interface
 
 (defclass sax-parser () ())
 

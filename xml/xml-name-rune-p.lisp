@@ -5,10 +5,10 @@
 ;;;;
 ;;;; Author: Gilbert Baumann <unk6@rz.uni-karlsruhe.de>
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
-#.(funcall 
-   (compile 
+#.(funcall
+   (compile
     nil
     '(lambda ()
       (let ((+max+ #xD800)
@@ -104,7 +104,7 @@
             ((rune-in-range-p (code range-vector)
 	       (declare (type simple-vector range-vector))
 	       ;;we were always dealing with a sorted vector... bin search it
- 
+
 	       (let ((start 0)
 		     (end (length range-vector)))
 		 (while (< start end)
@@ -118,7 +118,7 @@
 			   (setf end mid-index))
 			 (t
 			   (return t))))))))
-	     
+
 	     (name-start-rune-p (rune)
                (or (letter-rune-p rune)
                    (= #.(char-code #\_) rune)

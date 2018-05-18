@@ -9,10 +9,10 @@
 ;;;; Author: knowledgeTools Int. GmbH
 
 #-cxml-system::utf8dom-file
-(in-package :rune-dom)
+(cl:in-package #:rune-dom)
 
 #+cxml-system::utf8dom-file
-(in-package :utf8-dom)
+(cl:in-package #:utf8-dom)
 
 
 (defclass dom-builder (sax:content-handler)
@@ -95,7 +95,7 @@
   (flush-characters handler)
   (with-slots (document element-stack) handler
     (let* ((nsp sax:*namespace-processing*)
-	   (element (make-instance 'element 
+	   (element (make-instance 'element
                      :tag-name qname
                      :owner document
 		     :namespace-uri (when nsp namespace-uri)

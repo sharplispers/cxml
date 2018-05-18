@@ -1,4 +1,4 @@
-(in-package :sax-tests)
+(cl:in-package #:sax-tests)
 
 (defclass event-collecting-handler ()
   ((event-list :initform '() :accessor event-list)))

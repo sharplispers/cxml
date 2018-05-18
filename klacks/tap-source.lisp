@@ -16,7 +16,7 @@
 ;;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;;; Boston, MA  02111-1307  USA.
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 (defun klacks:make-tapping-source (upstream-source &optional sax-handler)
   (make-instance 'klacks:tapping-source
@@ -34,7 +34,7 @@
     (sax:register-sax-parser (dribble-handler instance) s-p)))
 
 
-;;; event dribbling 
+;;; event dribbling
 
 (defun maybe-dribble (source)
   (unless (or (seen-event-p source) (document-done-p source))

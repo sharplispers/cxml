@@ -6,7 +6,7 @@
 ;;;; Author: David Lichteblau <david@lichteblau.com>
 ;;;; Copyright (c) 2004 knowledgeTools Int. GmbH
 
-(in-package :cxml)
+(cl:in-package #:cxml)
 
 (defun dom:map-document
     (handler document
@@ -42,7 +42,7 @@
 		;; get them
 		(dotimes (k (dom:length ns))
 		  (setf (elt a k) (dom:item ns k)))
-		;; sort them 
+		;; sort them
 		(setf a (sort a #'rod< :key #'dom:name))
 		(loop for n across a do
 		      (sax:notation-declaration handler
