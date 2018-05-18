@@ -1,10 +1,10 @@
-(defpackage :cxml-system
-  (:use :asdf :cl))
-(in-package :cxml-system)
+(cl:defpackage #:cxml-system
+  (:use #:asdf #:cl))
+(cl:in-package #:cxml-system)
 
 (defclass dummy-cxml-component () ())
 
-(defmethod asdf:component-name ((c dummy-cxml-component))
+(defmethod component-name ((c dummy-cxml-component))
   :cxml)
 
 (progn
@@ -45,7 +45,7 @@
     (let (#+sbcl (*compile-print* nil))
       (call-next-method))))
 
-(asdf:defsystem :cxml-xml
+(defsystem :cxml-xml
   :default-component-class closure-source-file
   :pathname #+asdf2 "xml/"
             #-asdf2 (merge-pathnames
@@ -91,7 +91,7 @@
                                     :closure-common-system))))
     (call-next-method)))
 
-(asdf:defsystem :cxml-dom
+(defsystem :cxml-dom
   :default-component-class closure-source-file
   :pathname #+asdf2 "dom/"
             #-asdf2 (merge-pathnames
@@ -108,7 +108,7 @@
    (:file "dom-sax"         :depends-on ("package")))
   :depends-on (:cxml-xml))
 
-(asdf:defsystem :cxml-klacks
+(defsystem :cxml-klacks
   :default-component-class closure-source-file
   :pathname #+asdf2 "klacks/"
             #-asdf2 (merge-pathnames
@@ -122,7 +122,7 @@
      (:file "tap-source"))
     :depends-on (:cxml-xml))
 
-(asdf:defsystem :cxml-test
+(defsystem :cxml-test
   :default-component-class closure-source-file
   :pathname #+asdf2 "test/"
             #-asdf2 (merge-pathnames
@@ -131,6 +131,6 @@
   :components ((:file "domtest") (:file "xmlconf"))
   :depends-on (:cxml-xml :cxml-klacks :cxml-dom))
 
-(asdf:defsystem :cxml
+(defsystem :cxml
   :components ()
   :depends-on (:cxml-dom :cxml-klacks #-allegro :cxml-test))
