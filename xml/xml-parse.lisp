@@ -715,29 +715,29 @@
 
 (defstruct attdef
   ;; an attribute definition
-  element       ;name of element this attribute belongs to
-  name          ;name of attribute
-  type          ;type of attribute; either one of :CDATA, :ID, :IDREF, :IDREFS,
-                ; :ENTITY, :ENTITIES, :NMTOKEN, :NMTOKENS, or
-                ; (:NOTATION <name>*)
-                ; (:ENUMERATION <name>*)
-  default       ;default value of attribute:
-                ; :REQUIRED, :IMPLIED, (:FIXED content) or (:DEFAULT content)
-  (external-p *external-subset-p*))
+  (element nil :read-only t)      ; name of element this attribute belongs to
+  (name nil :read-only t)         ; name of attribute
+  (type nil :read-only t)         ; type of attribute; either one of :CDATA, :ID, :IDREF, :IDREFS,
+                                  ; :ENTITY, :ENTITIES, :NMTOKEN, :NMTOKENS, or
+                                  ; (:NOTATION <name>*)
+                                  ; (:ENUMERATION <name>*)
+  (default nil :read-only t)      ; default value of attribute:
+                                  ; :REQUIRED, :IMPLIED, (:FIXED content) or (:DEFAULT content)
+  (external-p *external-subset-p* :read-only t))
 
 (defstruct elmdef
   ;; an element definition
-  name          ;name of the element
-  content       ;content model            [*]
-  attributes    ;list of defined attributes
-  compiled-cspec ;cons of validation function for contentspec
+  (name nil  :read-only t)         ; name of the element
+  (content)                        ; content model            [*]
+  (attributes)                     ; list of defined attributes
+  (compiled-cspec)                 ; cons of validation function for contentspec
   (external-p *external-subset-p*))
 
 (defstruct dtd
-  (elements (%make-rod-hash-table))     ;elmdefs
-  (gentities (%make-rod-hash-table))    ;general entities
-  (pentities (%make-rod-hash-table))    ;parameter entities
-  (notations (%make-rod-hash-table)))
+  (elements (%make-rod-hash-table) :read-only t)  ; elmdefs
+  (gentities (%make-rod-hash-table) :read-only t) ; general entities
+  (pentities (%make-rod-hash-table) :read-only t) ; parameter entities
+  (notations (%make-rod-hash-table) :read-only t))
 
 (defun validate-start-element (ctx name)
   (when *validate*
