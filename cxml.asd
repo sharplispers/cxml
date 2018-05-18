@@ -42,7 +42,7 @@
 (defmethod perform :around ((o compile-op) (s closure-source-file))
   ;; shut up already.  Correctness first.
   (handler-bind ((sb-ext:compiler-note #'muffle-warning))
-    (let (#+sbcl (*compile-print* nil))
+    (let ((*compile-print* nil))
       (call-next-method))))
 
 (defclass utf8dom-file (closure-source-file) ((of)))
