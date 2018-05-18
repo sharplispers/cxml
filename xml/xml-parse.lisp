@@ -713,6 +713,32 @@
 (defvar *validate* t)
 (defvar *external-subset-p* nil)
 
+(defstruct attdef
+  ;; an attribute definition
+  element       ;name of element this attribute belongs to
+  name          ;name of attribute
+  type          ;type of attribute; either one of :CDATA, :ID, :IDREF, :IDREFS,
+                ; :ENTITY, :ENTITIES, :NMTOKEN, :NMTOKENS, or
+                ; (:NOTATION <name>*)
+                ; (:ENUMERATION <name>*)
+  default       ;default value of attribute:
+                ; :REQUIRED, :IMPLIED, (:FIXED content) or (:DEFAULT content)
+  (external-p *external-subset-p*))
+
+(defstruct elmdef
+  ;; an element definition
+  name          ;name of the element
+  content       ;content model            [*]
+  attributes    ;list of defined attributes
+  compiled-cspec ;cons of validation function for contentspec
+  (external-p *external-subset-p*))
+
+(defstruct dtd
+  (elements (%make-rod-hash-table))     ;elmdefs
+  (gentities (%make-rod-hash-table))    ;general entities
+  (pentities (%make-rod-hash-table))    ;parameter entities
+  (notations (%make-rod-hash-table)))
+
 (defun validate-start-element (ctx name)
   (when *validate*
     (let* ((pair (car (model-stack ctx)))
@@ -1062,28 +1088,6 @@
   (define-entity nil #"apos" :general (make-internal-entdef #"'"))
   (define-entity nil #"quot" :general (make-internal-entdef #"\"")))
 
-(defstruct attdef
-  ;; an attribute definition
-  element       ;name of element this attribute belongs to
-  name          ;name of attribute
-  type          ;type of attribute; either one of :CDATA, :ID, :IDREF, :IDREFS,
-                ; :ENTITY, :ENTITIES, :NMTOKEN, :NMTOKENS, or
-                ; (:NOTATION <name>*)
-                ; (:ENUMERATION <name>*)
-  default       ;default value of attribute:
-                ; :REQUIRED, :IMPLIED, (:FIXED content) or (:DEFAULT content)
-  (external-p *external-subset-p*)
-  )
-
-(defstruct elmdef
-  ;; an element definition
-  name          ;name of the element
-  content       ;content model            [*]
-  attributes    ;list of defined attributes
-  compiled-cspec ;cons of validation function for contentspec
-  (external-p *external-subset-p*)
-  )
-
 ;; [*] in XML it is possible to define attributes before the element
 ;; itself is defined and since we hang attribute definitions into the
 ;; relevant element definitions, the `content' slot indicates whether an
@@ -1100,12 +1104,6 @@
   (make-hash-table :test
                    #+rune-is-character 'equal
                    #-rune-is-character 'equalp))
-
-(defstruct dtd
-  (elements (%make-rod-hash-table))     ;elmdefs
-  (gentities (%make-rod-hash-table))    ;general entities
-  (pentities (%make-rod-hash-table))    ;parameter entities
-  (notations (%make-rod-hash-table)))
 
 (defun make-dtd-cache ()
   (puri:make-uri-space))
@@ -2787,7 +2785,7 @@
 		      (null sax:*namespace-processing*))
 	    (setf attrs
 		  (remove-if (compose #'xmlns-attr-p #'sax:attribute-qname)
-			     attrs))) 
+			     attrs)))
 	  (values cat
 		  *namespace-bindings*
 		  new-namespaces
@@ -2972,7 +2970,7 @@
 			      (cdar atts)))
 	    (wf-error i "Bad XML version number: ~S." (rod-string (cdar atts))))
 	  (setf (xml-header-version res) (rod-string (cdar atts)))
-	  (pop atts)) 
+	  (pop atts))
 	(unless (eq (caar atts) (intern-name '#.(string-rod "encoding")))
 	  (wf-error i "TextDecl needs encoding."))
 	(unless (and (>= (length (cdar atts)) 1)
@@ -3197,7 +3195,7 @@
       (pathname (apply #'parse-file input handler args))
       (rod      (apply #'parse-rod input handler args))
       (array    (apply #'parse-octets input handler args))
-      (stream 
+      (stream
        (let ((xstream (make-xstream input :speed 8192)))
 	 (setf (xstream-name xstream)
 	       (make-stream-name
@@ -3381,7 +3379,7 @@
 	  (declare (ignore prefix))
 	  (unless (or sax:*include-xmlns-attributes*
 		      (null sax:*namespace-processing*))
-	    (setf attrs nil)) 
+	    (setf attrs nil))
 	  (sax:start-element (handler *ctx*) uri local-name qname attrs)
 	  (sax:end-element (handler *ctx*) uri local-name qname))
 	(undeclare-namespaces new-namespaces)))
@@ -3746,7 +3744,7 @@
 	      (wf-error nil "~S is not a valid NcName."
 			(rod-string local-name))))
 	(values () qname))))
-		
+
 (defun decode-qname (qname)
   "decode-qname name => namespace-uri, prefix, local-name"
   (declare (type runes:simple-rod qname))
@@ -3916,7 +3914,7 @@
    @return{A @class{SAX handler}.}
 
    Create a SAX handler which validates against a DTD instance.
-   The document's root element must be named @code{root}. 
+   The document's root element must be named @code{root}.
    Used with @fun{dom:map-document}, this validates a document
    object as if by re-reading it with a validating parser, except
    that declarations recorded in the document instance are completely
