@@ -118,5 +118,10 @@
                (:file "xmlconf")))
 
 (defsystem "cxml"
-  :components ()
+  :description "Closure XML - a Common Lisp XML parser"
+  :license "LLGPL" ; see the COPYING file for details
+  :author ("Gilbert Baumann"
+           "Henrik Motakef"
+           "David Lichteblau")
+  :maintainer "Sharp Lispers <sharplispers@googlegroups.com>"
   :depends-on ("cxml/dom" "cxml/klacks" #-allegro "cxml/test"))
