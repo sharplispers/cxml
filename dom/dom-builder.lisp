@@ -76,14 +76,14 @@
 	     `(defmethod ,name ((handler dom-builder) ,@args)
 		(when (slot-boundp handler 'internal-subset)
 		  (push (list ',name ,@args) (internal-subset handler))))))
-  (defhandler sax:unparsed-entity-declaration
-      name public-id system-id notation-name)
-  (defhandler sax:external-entity-declaration
-      kind name public-id system-id)
-  (defhandler sax:internal-entity-declaration
-      kind name value)
-  (defhandler sax:notation-declaration
-      name public-id system-id)
+  #+(or) (defhandler sax:unparsed-entity-declaration
+           name public-id system-id notation-name)
+  #+(or) (defhandler sax:external-entity-declaration
+           kind name public-id system-id)
+  #+(or) (defhandler sax:internal-entity-declaration
+           kind name value)
+  #+(or) (defhandler sax:notation-declaration
+           name public-id system-id)
   (defhandler sax:element-declaration
       name model)
   (defhandler sax:attribute-declaration
