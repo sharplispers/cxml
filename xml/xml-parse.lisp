@@ -2506,10 +2506,14 @@
 
 (defun setup-encoding (input xml-header)
   (when (xml-header-encoding xml-header)
-    (let ((enc (find-encoding (xml-header-encoding xml-header))))
-      (cond (enc
-             (setf (xstream-encoding (car (zstream-input-stack input)))
-               enc))
+    (let ((enc (find-encoding (xml-header-encoding xml-header)))
+          (xstream (car (zstream-input-stack input))))
+      (cond ((eql enc :utf-8)
+             (let ((old (xstream-encoding xstream)))
+               (unless (eql old :utf-8)
+                 (with-simple-restart (continue "Stick with ~a" old)
+                   (wf-error input "Header says UTF-8, but BOM says ~a." old)))))
+            (enc (setf (xstream-encoding xstream) enc))
             (t
              (warn "There is no such encoding: ~S." (xml-header-encoding xml-header)))))))
 
@@ -2604,12 +2608,15 @@
               (let ((xi2 (xstream-open-extid effective-extid)))
 		(with-zstream (zi2 :input-stack (list xi2))
 		  (ensure-dtd)
+                  (unless (ignore-errors (have-internal-subset (handler *ctx*)))
+                    (sax:start-internal-subset (handler *ctx*)))
 		  (p/ext-subset zi2)
 		  (when (and fresh-dtd-p
 			     *cache-all-dtds*
 			     *validate*
 			     (not (standalone-p *ctx*)))
-		    (setf (getdtd sysid *dtd-cache*) (dtd *ctx*)))))))))
+		    (setf (getdtd sysid *dtd-cache*) (dtd *ctx*)))
+                  (sax:end-internal-subset (handler *ctx*))))))))
       (sax:end-dtd (handler *ctx*))
       (let ((dtd (dtd *ctx*)))
         (sax:entity-resolver
@@ -3563,20 +3570,20 @@
   (let ((input-var (gensym))
         (collect (gensym))
         (c (gensym)))
-    `(LET ((,input-var ,input))
-       (MULTIPLE-VALUE-BIND (,res ,res-start ,res-end)
-           (WITH-RUNE-COLLECTOR/RAW (,collect)
-             (LOOP
-               (LET ((,c (PEEK-RUNE ,input-var)))
-                 (COND ((EQ ,c :EOF)
+    `(let ((,input-var ,input))
+       (multiple-value-bind (,res ,res-start ,res-end)
+           (with-rune-collector/raw (,collect)
+             (loop
+               (let ((,c (peek-rune ,input-var)))
+                 (cond ((eq ,c :eof)
                         ;; xxx error message
-                        (RETURN))
-                       ((FUNCALL ,predicate ,c)
-                        (RETURN))
+                        (return))
+                       ((funcall ,predicate ,c)
+                        (return))
                        (t
                         (,collect ,c)
-                        (CONSUME-RUNE ,input-var))))))
-         (LOCALLY
+                        (consume-rune ,input-var))))))
+         (locally
            ,@body)))))
 
 (defun read-name-token (input)
@@ -3833,13 +3840,10 @@
 (defun build-attribute-list (attr-alist)
   ;; fixme: if there is a reason this function reverses attribute order,
   ;; it should be documented.
-  (let (attributes)
-    (dolist (pair attr-alist)
-      (push (sax:make-attribute :qname (car pair)
-				:value (cdr pair)
-				:specified-p t)
-	    attributes))
-    attributes))
+  (loop for (qname . value) in attr-alist
+        collect (sax:make-attribute :qname qname
+                                    :value value
+                                    :specified-p t)))
 
 (defun check-attribute-uniqueness (attributes)
   ;; 5.3 Uniqueness of Attributes
