@@ -194,6 +194,15 @@
   (disallow-internal-subset nil)
   main-zstream)
 
+(defmacro with-restored-base-stack ((context) &body body)
+  (let ((context-var (gensym "CONTEXT"))
+        (old-base-stack-var (gensym "OLD-BASE-STACK"))) ; TODO use alexandria later
+    `(let* ((,context-var ,context)
+            (,old-base-stack-var (base-stack ,context-var)))
+       (multiple-value-prog1
+           (progn ,@body)
+         (setf (base-stack ,context-var) ,old-base-stack-var)))))
+
 (defvar *expand-pe-p* nil)
 
 (defparameter *initial-namespace-bindings*
@@ -2748,16 +2757,20 @@
 	(validity-error "(23) Notation Declared: ~S" (rod-string name))))))
 
 (defun p/element (input)
-  (multiple-value-bind (cat n-b new-b uri lname qname attrs) (p/sztag input)
-    (sax:start-element (handler *ctx*) uri lname qname attrs)
-    (when (eq cat :stag)
-      (let ((*namespace-bindings* n-b))
-	(p/content input))
-      (p/etag input qname))
-    (sax:end-element (handler *ctx*) uri lname qname)
-    (undeclare-namespaces new-b)
-    (pop (base-stack *ctx*))
-    (validate-end-element *ctx* qname)))
+  (let* ((context *ctx*)
+         (handler (handler context))
+         qname*)
+    (with-restored-base-stack (context)
+      (multiple-value-bind (cat n-b new-b uri lname qname attrs) (p/sztag input)
+        (sax:start-element handler uri lname qname attrs)
+        (when (eq cat :stag)
+          (let ((*namespace-bindings* n-b))
+            (p/content input))
+          (p/etag input qname))
+        (sax:end-element handler uri lname qname)
+        (undeclare-namespaces new-b)
+        (setf qname* qname)))
+    (validate-end-element context qname*)))
 
 (defun p/sztag (input)
   (multiple-value-bind (cat sem) (read-token input)
