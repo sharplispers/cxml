@@ -124,4 +124,5 @@
            "Henrik Motakef"
            "David Lichteblau")
   :maintainer "Sharp Lispers <sharplispers@googlegroups.com>"
-  :depends-on ("cxml/dom" "cxml/klacks" #-allegro "cxml/test"))
+  :depends-on ("cxml/dom" "cxml/klacks")
+  :in-order-to ((test-op (test-op "cxml/test"))))
