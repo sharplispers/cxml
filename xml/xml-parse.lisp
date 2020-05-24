@@ -2224,6 +2224,8 @@
                  (t nil))))
       #'doit)))
 
+(defvar *left-recursion* nil)
+
 (defun compile-content-model (cspec &optional (continuation #'cmodel-done))
   (if (vectorp cspec)
       (lambda (actual-name)
@@ -2251,9 +2253,11 @@
         (*
           (let (maybe-continuation)
             (labels ((recurse (actual-name)
-                       (if (null actual-name)
+                       (if (or (null actual-name)
+                               *left-recursion*)
                            (funcall continuation actual-name)
-                           (or (funcall maybe-continuation actual-name)
+                           (or (let ((*left-recursion* t))
+                                 (funcall maybe-continuation actual-name))
                                (funcall continuation actual-name)))))
               (setf maybe-continuation
                     (compile-content-model (second cspec) #'recurse))
