@@ -2621,7 +2621,9 @@
               (let ((xi2 (xstream-open-extid effective-extid)))
 		(with-zstream (zi2 :input-stack (list xi2))
 		  (ensure-dtd)
-                  (sax:start-internal-subset (handler *ctx*))
+                  ;; Avoid duplicate internal subsets.
+                  (unless (ignore-errors (have-internal-subset (handler *ctx*)))
+                    (sax:start-internal-subset (handler *ctx*)))
 		  (p/ext-subset zi2)
 		  (when (and fresh-dtd-p
 			     *cache-all-dtds*
